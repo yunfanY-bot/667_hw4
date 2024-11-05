@@ -39,14 +39,17 @@ def make_verbalizer(dev_ds: Dataset) -> str:
 
     Premise: A 19-year-old Afghan asylum-seeker suffered serious burns after setting himself on fire at a supermarket warehouse in Bavaria, German police said. Police said that the man poured gasoline over himself and set himself ablaze early Monday in Gaimersheim, a town between Nuremberg and Munich. He had bought the gasoline shortly before at a filling station. The blaze was extinguished swiftly by other people at the scene, but the man was seriously injured. The man’s motives weren’t immediately clear. Police say he was carrying a knife but didn’t use it.
     Hypothesis: The injuries were fatal
+    Reason: The paragraph states the asylum-seeker was only severely injured.
     Answer: 2
 
     Premise: A man walks past an electronic stock board showing Japan's Nikkei 225 index and other country's index at a securities firm in Tokyo Monday, Sept. 3, 2018. Asian shares were mostly lower Monday amid worries about escalating trade friction between the U.S. and Canada, who have been unable to agree to a revamped trade deal but will continue negotiating this week. Eugene Hoshiko AP Photo
     Hypothesis: The US Canada and Japan are close to concluding a trade deal.
+    Reason: There is no real way to tell if the parties will conclude the treaty in a matter of days or a matter of weeks.
     Answer: 1
 
     Premise: by Ted Raymond, Newstalk 580 CFRA A stretch of Highway 17 between Pembroke and Mattawa has reopened, after being closed due to a fatal crash. Ontario Provincial Police say a motorcycle and a car collided just before 12:00 p.m. Friday, near Deux Rivieres. The motorcycle passenger was taken to hospital by air ambulance and was pronounced dead. The driver of the motorcycle was seriously injured. The driver of the other vehicle was not hurt. An OPP news release said westbound traffic was being diverted south on Highway 41 at Pembroke. The road reopened just after 6:30 p.m.
     Hypothesis: The road was closed for more than two hours after the crash
+    Reason: The road was closed from 12:00 to 6:30. I think the system got it wrong because I introduced new numbers
     Answer: 0
 
     Now analyze this similar case, only answer with 0, 1, or 2:
