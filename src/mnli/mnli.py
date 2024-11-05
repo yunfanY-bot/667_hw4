@@ -22,10 +22,15 @@ def load_mnli_test() -> Dataset:
     return ds
 
 def make_verbalizer(dev_ds: Dataset) -> str:
-    """Creates a few-shot prompt template with examples from the training set."""
-    
-    # Create a clear instruction with examples
-    verbalizer = """Given a premise and hypothesis, determine if the hypothesis is:
+    zero_shot = """Given a premise and hypothesis, determine if the hypothesis is:
+    - 0: hypothesis is implied by the premise
+    - 1: hypothesis is neither contradicted nor implied by the premise
+    - 2: hypothesis contradicts the premise
+
+    only answer with 0, 1, or 2.
+    """
+
+    few_shot = """Given a premise and hypothesis, determine if the hypothesis is:
     - 0: hypothesis is implied by the premise
     - 1: hypothesis is neither contradicted nor implied by the premise
     - 2: hypothesis contradicts the premise
@@ -47,6 +52,7 @@ def make_verbalizer(dev_ds: Dataset) -> str:
     Now analyze this similar case, only answer with 0, 1, or 2:
 
     """
+    verbalizer = zero_shot
 
     return verbalizer
 
