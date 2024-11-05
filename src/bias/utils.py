@@ -33,14 +33,14 @@ def read_data(seed: int, train_size: int, test_size: int) -> Tuple[List[str], Li
     # Get training and testing datasets from `train` and `validation` splits
     # Step 1: shuffle with seed
     # Step 2: select first train/test size data
-    train_data = ...
-    test_data = ...
+    train_data = dataset['train'].shuffle(seed=seed).select(range(train_size))
+    test_data = dataset['validation'].shuffle(seed=seed).select(range(test_size))
 
     # Extract sentences and labels
-    train_sentences = ...
-    train_labels = ...
-    test_sentences = ...
-    test_labels = ...
+    train_sentences = [example['sentence'] for example in train_data]
+    train_labels = [example['label'] for example in train_data]
+    test_sentences = [example['sentence'] for example in test_data]
+    test_labels = [example['label'] for example in test_data]
 
     return train_sentences, train_labels, test_sentences, test_labels
 
@@ -64,7 +64,7 @@ def create_prompt(
         str: Formatted prompt string containing examples and test sentence
     """
 
-    prompt = ""
+    prompt = "Here are some examples, use them to help you understand the sentiment of the following sentence:\n\n"
 
     # Add few-shot samples
     for s, l in zip(few_shot_sentences, few_shot_labels):
@@ -94,8 +94,8 @@ def get_responses(prompts: List[str], echo: bool = False) -> List[Any]:
 
     # Set OpenAI according to the instruction file in README
     client = openai.OpenAI(
-        api_key=...,  # please use .env file to store your key
-        base_url=...,
+        api_key="sk-4dQ8Q_NUHu4BRqt-ZPctRg",
+        base_url="https://api.openai.com/v1"
     )
     # Get responses
     responses = []
@@ -144,18 +144,18 @@ def get_label_probs(
 
     # Initial probabilities from model responses
     for i, response in enumerate(tqdm(responses, desc="Get initial prob")):
-        top_logprobs = ...
-        label_probs = ...
+        top_logprobs = response.logprobs.top_logprobs[0]  # Get logprobs of first token
+        label_probs = np.zeros(num_labels)  # Initialize probabilities for each label
 
         for j, label in label_dict.items():
             if a_prefix[-1] == " ":
                 label = " " + label  # add space to match the format
 
             if label in top_logprobs:
-                label_probs[j] += ...
+                label_probs[j] += np.exp(top_logprobs[label])  # Convert log prob to prob
             else:
                 # add to missing positions
-                ...
+                all_missing_positions.append((i, j))
 
         all_label_probs.append(label_probs)
     all_label_probs = np.array(all_label_probs)
@@ -163,17 +163,20 @@ def get_label_probs(
     # Fill in missing positions
     all_additional_prompts = []
     for i, j in all_missing_positions:
-        prompt = ...
-
-        if a_prefix[-1] == " ":
-            prompt += " " + label
+        prompt = create_prompt(
+            q_prefix=q_prefix,
+            a_prefix=a_prefix,
+            few_shot_sentences=few_shot_sentences,
+            few_shot_labels=few_shot_labels,
+            test_sentence=test_sentences[i]
+        )
 
         all_additional_prompts.append(prompt)
 
     additional_responses = get_responses(all_additional_prompts, echo=True)
 
     for idx, (i, j) in enumerate(all_missing_positions):
-        prob = ...
+        prob = np.exp(additional_responses[idx].logprobs.token_logprobs[-1])
         all_label_probs[i][j] = prob
 
     return all_label_probs  # not normalized
@@ -203,7 +206,13 @@ def calibrate(
     label_dict = {0: "Negative", 1: "Positive"}
     num_labels = len(label_dict)
 
-    prompt = ...
+    prompt = create_prompt(
+        q_prefix=q_prefix,
+        a_prefix=a_prefix,
+        few_shot_sentences=few_shot_sentences,
+        few_shot_labels=few_shot_labels,
+        test_sentence=content_free_input
+    )
     p_y = [0] * num_labels
 
     for i, answer in label_dict.items():
@@ -213,9 +222,9 @@ def calibrate(
             key = answer
 
         response = get_responses(prompts=[prompt+key], echo=True)[0]
-        p_y[i] = ...
+        p_y[i] = np.exp(response.logprobs.token_logprobs[-1])
 
-    p_y = ...
+    p_y = np.array(p_y) / np.sum(p_y)  # Normalize probabilities
 
     return p_y
 
@@ -234,18 +243,20 @@ def eval_accuracy(all_label_probs: np.ndarray, test_labels: List[int], p_cf: Opt
     """
 
     # We use diagonal matrix here as the paper mentions it's better than the identity matrix for classification
-    num_labels = ...
+    num_labels = len(all_label_probs[0])
 
     if p_cf is None:
-        W = ...
-        b = ...
+        W = np.eye(num_labels)  # Identity matrix if no calibration
+        b = np.zeros(num_labels)
     else:
-        W = ...
-        b = ...
+        W = np.diag(1.0 / p_cf)  # Diagonal matrix with inverse calibration probabilities
+        b = np.zeros(num_labels)
 
     corrects = []
     for prob, label in zip(all_label_probs, test_labels):
-        ...
+        calibrated_prob = W @ prob + b  # Apply calibration
+        predicted_label = np.argmax(calibrated_prob)  # Get predicted label
+        corrects.append(predicted_label == label)  # Check if prediction is correct
 
     accuracy = np.mean(corrects)
     return accuracy

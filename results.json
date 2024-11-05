@@ -1,6 +1,34 @@
 {
     "tests": [
         {
+            "score": 1,
+            "max_score": 1,
+            "name": "test_read_data",
+            "output": "",
+            "visibility": "visible"
+        },
+        {
+            "score": 4,
+            "max_score": 4,
+            "name": "test_eval_accuracy",
+            "output": "",
+            "visibility": "visible"
+        },
+        {
+            "score": 4,
+            "max_score": 4,
+            "name": "test_get_label_probs",
+            "output": "",
+            "visibility": "visible"
+        },
+        {
+            "score": 4,
+            "max_score": 4,
+            "name": "test_calibrate",
+            "output": "",
+            "visibility": "visible"
+        },
+        {
             "score": 0,
             "max_score": 0,
             "name": "test_env",
