@@ -26,19 +26,27 @@ def make_verbalizer(dev_ds: Dataset) -> str:
     
     # Create a clear instruction with examples
     verbalizer = """Given a premise and hypothesis, determine if the hypothesis is:
-    - entailment (0): hypothesis is implied by the premise
-    - neutral (1): hypothesis is neither contradicted nor implied by the premise
-    - contradiction (2): hypothesis contradicts the premise
+    - 0: hypothesis is implied by the premise
+    - 1: hypothesis is neither contradicted nor implied by the premise
+    - 2: hypothesis contradicts the premise
 
     Here are some examples:
 
+    Premise: The Other One is the third solo album by former Fleetwood Mac guitarist Bob Welch. The track "Future Games" was first released on the Fleetwood Mac album of the same name in 1971.
+    Hypothesis: Bob Welch is the current guitarist of Fleetwood Mac.
+    Answer: 2
+
+    Premise: TOKYO, Dec 18 (Reuters) - Japan’s Shionogi & Co said on Tuesday that it has applied to health regulators in the United States, Canada and Europe for approval of its HIV drug Dolutegravir. Shionogi developed Dolutegravir with a Viiv Healthcare, an AIDS drug joint venture between GlaxoSmithKline and Pfizer, in exchange for its rights to the drug.
+    Hypothesis: The HIV drug is being approved for use in the usa
+    Answer: 1
+
+    Premise: Rhodochition is a genus of flowering plants within the family Plantaginaceae, native to southern Mexico and neighbouring Guatemala.
+    Hypothesis: You can find the purple bell vine in more than one country.
+    Answer: 0
+
+    Now analyze this similar case, only answer with 0, 1, or 2:
+
     """
-
-    ## add 3 examples from the dev set
-    for ex in dev_ds.take(3):
-        verbalizer += f"\nPremise: {ex['premise']}\nHypothesis: {ex['hypothesis']}\nAnswer: {ex['label']}"
-
-    verbalizer += "\n\nNow analyze this similar case, only answer with 0, 1, or 2:"
 
     return verbalizer
 
