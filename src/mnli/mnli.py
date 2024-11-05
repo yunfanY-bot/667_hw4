@@ -45,7 +45,7 @@ def predict_labels(prompts: list[str]) -> list[int]:
     # Initialize the model and tokenizer
     model_name = "allenai/OLMo-7B-Instruct-hf"  # or another suitable model
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForCausalLM.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
     
     predictions = []
     for prompt in prompts:
