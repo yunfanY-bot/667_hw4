@@ -95,7 +95,7 @@ def get_responses(prompts: List[str], echo: bool = False) -> List[Any]:
     # Set OpenAI according to the instruction file in README
     client = openai.OpenAI(
         api_key="sk-4dQ8Q_NUHu4BRqt-ZPctRg",
-        base_url="https://api.openai.com/v1"
+        base_url="https://cmu.litellm.ai"
     )
     # Get responses
     responses = []
