@@ -49,6 +49,8 @@ def make_verbalizer(dev_ds: Dataset) -> str:
     Hypothesis: The road was closed for more than two hours after the crash
     Answer: 0, hypothesis is implied by the premise
 
+    Now analyze this similar case, only answer with 0, 1, or 2:
+
     """
     verbalizer = few_shot
 
