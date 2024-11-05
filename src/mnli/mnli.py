@@ -52,7 +52,7 @@ def make_verbalizer(dev_ds: Dataset) -> str:
     Now analyze this similar case, only answer with 0, 1, or 2:
 
     """
-    verbalizer = few_shot
+    verbalizer = zero_shot
 
     return verbalizer
 
@@ -102,7 +102,7 @@ if __name__ == "__main__":
     
     prompts = []
     true_labels = []
-    for ex in dev_ds:
+    for ex in test_ds:
       prompt = make_prompt(verbalizer, ex["premise"], ex["hypothesis"])
       print(prompt)
       prompts.append(prompt)
