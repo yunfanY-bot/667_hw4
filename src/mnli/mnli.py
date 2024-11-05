@@ -21,23 +21,56 @@ def load_mnli_test() -> Dataset:
     ds = load_dataset("facebook/anli", split="test_r3").shuffle().take(100)
     return ds
 
-def make_verbalizer(dev_ds:Dataset) -> str:
-    """Should return a verbalizer string. You may choose to use examples from the dev set in the verbalizer."""
-
-    # YOUR CODE HERE
-    pass
-
-def make_prompt(verbalizer: str, premise: str, hypothesis:str) -> str:
-    """Given a verbalizer, a premise, and a hypothesis, return the prompt."""
+def make_verbalizer(dev_ds: Dataset) -> str:
+    """Creates a few-shot prompt template with examples from the training set."""
     
-    # YOUR CODE HERE
-    pass
+    # Create a clear instruction with examples
+    verbalizer = """Given a premise and hypothesis, determine if the hypothesis is:
+    - entailment (0): hypothesis is implied by the premise
+    - neutral (1): hypothesis is neither contradicted nor implied by the premise
+    - contradiction (2): hypothesis contradicts the premise
 
-def predict_labels(prompts: list[str]):
-    """Should return a list of integer predictions (0, 1 or 2), one per prompt."""
+    Here are some examples:
+    """
+
+    return verbalizer
+
+def make_prompt(verbalizer: str, premise: str, hypothesis: str) -> str:
     
-    # YOUR CODE HERE.
-    pass
+    prompt = f"{verbalizer}\nPremise: {premise}\nHypothesis: {hypothesis}\nAnswer:"
+    return prompt
+
+def predict_labels(prompts: list[str]) -> list[int]:
+    """Predicts labels for a list of prompts using a language model."""
+    
+    # Initialize the model and tokenizer
+    model_name = "allenai/OLMo-7B-Instruct-hf"  # or another suitable model
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(model_name)
+    
+    predictions = []
+    for prompt in prompts:
+        # Tokenize and generate completion
+        inputs = tokenizer(prompt, return_tensors="pt", max_length=512, truncation=True)
+        outputs = model.generate(
+            inputs["input_ids"],
+            max_new_tokens=5,
+            temperature=0.1,
+            num_return_sequences=1,
+        )
+        
+        # Extract the predicted label
+        response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        try:
+            # Extract the first number (0, 1, or 2) from the response
+            label = int(next(char for char in response if char in "012"))
+        except StopIteration:
+            # Default to neutral if no valid label is found
+            label = 1
+            
+        predictions.append(label)
+    
+    return predictions
 
 if __name__ == "__main__":
     train_ds = load_mnli_train()
