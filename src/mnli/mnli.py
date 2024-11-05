@@ -58,7 +58,7 @@ def make_verbalizer(dev_ds: Dataset) -> str:
 
 def make_prompt(verbalizer: str, premise: str, hypothesis: str) -> str:
     
-    prompt = f"{verbalizer}\nPremise: {premise}\nHypothesis: {hypothesis}\nAnswer:"
+    prompt = f"{verbalizer}\nPremise: {premise}\nHypothesis: {hypothesis}\n"
     return prompt
 
 def predict_labels(prompts: list[str]) -> list[int]:
