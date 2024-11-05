@@ -52,7 +52,7 @@ def make_verbalizer(dev_ds: Dataset) -> str:
     Now analyze this similar case, only answer with 0, 1, or 2:
 
     """
-    verbalizer = zero_shot
+    verbalizer = few_shot
 
     return verbalizer
 
