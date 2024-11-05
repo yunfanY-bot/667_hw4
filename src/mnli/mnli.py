@@ -30,7 +30,6 @@ def make_verbalizer(dev_ds: Dataset) -> str:
     - neutral (1): hypothesis is neither contradicted nor implied by the premise
     - contradiction (2): hypothesis contradicts the premise
 
-    Here are some examples:
     """
 
     return verbalizer
@@ -83,6 +82,7 @@ if __name__ == "__main__":
     true_labels = []
     for ex in dev_ds:
       prompt = make_prompt(verbalizer, ex["premise"], ex["hypothesis"])
+      print(prompt)
       prompts.append(prompt)
       true_labels.append(ex["label"])
     
