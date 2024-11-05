@@ -30,9 +30,15 @@ def make_verbalizer(dev_ds: Dataset) -> str:
     - neutral (1): hypothesis is neither contradicted nor implied by the premise
     - contradiction (2): hypothesis contradicts the premise
 
-    Only answer with 0, 1, or 2.
+    Here are some examples:
 
     """
+
+    ## add 3 examples from the dev set
+    for ex in dev_ds.take(3):
+        verbalizer += f"\nPremise: {ex['premise']}\nHypothesis: {ex['hypothesis']}\nAnswer: {ex['label']}"
+
+    verbalizer += "\n\nNow analyze this similar case, only answer with 0, 1, or 2:"
 
     return verbalizer
 
