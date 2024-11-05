@@ -23,17 +23,20 @@ def load_mnli_test() -> Dataset:
 
 def make_verbalizer(dev_ds: Dataset) -> str:
     zero_shot = """Given a premise and hypothesis, determine if the hypothesis is:
-    - 0: hypothesis is implied by the premise
-    - 1: hypothesis is neither contradicted nor implied by the premise
-    - 2: hypothesis contradicts the premise
+    - 0 (entailment): hypothesis is implied by the premise
+    - 1 (neutral): hypothesis is neither contradicted nor implied by the premise
+    - 2 (contradiction): hypothesis contradicts the premise
 
-    only answer with 0, 1, or 2.
+    Your should choose your answer from the following options:
+    - 0 (entailment)
+    - 1 (neutral)
+    - 2 (contradiction)
     """
 
     few_shot = """Given a premise and hypothesis, determine if the hypothesis is:
-    - 0: hypothesis is implied by the premise
-    - 1: hypothesis is neither contradicted nor implied by the premise
-    - 2: hypothesis contradicts the premise
+    - 0 (entailment): hypothesis is implied by the premise
+    - 1 (neutral): hypothesis is neither contradicted nor implied by the premise
+    - 2 (contradiction): hypothesis contradicts the premise
 
     Here are some examples:
 
@@ -52,7 +55,7 @@ def make_verbalizer(dev_ds: Dataset) -> str:
     Now analyze this similar case, only answer with 0, 1, or 2:
 
     """
-    verbalizer = few_shot
+    verbalizer = zero_shot
 
     return verbalizer
 
