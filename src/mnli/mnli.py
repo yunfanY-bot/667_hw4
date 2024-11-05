@@ -37,16 +37,16 @@ def make_verbalizer(dev_ds: Dataset) -> str:
 
     Here are some examples:
 
-    Premise: The Other One is the third solo album by former Fleetwood Mac guitarist Bob Welch. The track "Future Games" was first released on the Fleetwood Mac album of the same name in 1971.
-    Hypothesis: Bob Welch is the current guitarist of Fleetwood Mac.
+    Premise: A 19-year-old Afghan asylum-seeker suffered serious burns after setting himself on fire at a supermarket warehouse in Bavaria, German police said. Police said that the man poured gasoline over himself and set himself ablaze early Monday in Gaimersheim, a town between Nuremberg and Munich. He had bought the gasoline shortly before at a filling station. The blaze was extinguished swiftly by other people at the scene, but the man was seriously injured. The man’s motives weren’t immediately clear. Police say he was carrying a knife but didn’t use it.
+    Hypothesis: The injuries were fatal
     Answer: 2
 
-    Premise: TOKYO, Dec 18 (Reuters) - Japan’s Shionogi & Co said on Tuesday that it has applied to health regulators in the United States, Canada and Europe for approval of its HIV drug Dolutegravir. Shionogi developed Dolutegravir with a Viiv Healthcare, an AIDS drug joint venture between GlaxoSmithKline and Pfizer, in exchange for its rights to the drug.
-    Hypothesis: The HIV drug is being approved for use in the usa
+    Premise: A man walks past an electronic stock board showing Japan's Nikkei 225 index and other country's index at a securities firm in Tokyo Monday, Sept. 3, 2018. Asian shares were mostly lower Monday amid worries about escalating trade friction between the U.S. and Canada, who have been unable to agree to a revamped trade deal but will continue negotiating this week. Eugene Hoshiko AP Photo
+    Hypothesis: The US Canada and Japan are close to concluding a trade deal.
     Answer: 1
 
-    Premise: Rhodochition is a genus of flowering plants within the family Plantaginaceae, native to southern Mexico and neighbouring Guatemala.
-    Hypothesis: You can find the purple bell vine in more than one country.
+    Premise: by Ted Raymond, Newstalk 580 CFRA A stretch of Highway 17 between Pembroke and Mattawa has reopened, after being closed due to a fatal crash. Ontario Provincial Police say a motorcycle and a car collided just before 12:00 p.m. Friday, near Deux Rivieres. The motorcycle passenger was taken to hospital by air ambulance and was pronounced dead. The driver of the motorcycle was seriously injured. The driver of the other vehicle was not hurt. An OPP news release said westbound traffic was being diverted south on Highway 41 at Pembroke. The road reopened just after 6:30 p.m.
+    Hypothesis: The road was closed for more than two hours after the crash
     Answer: 0
 
     Now analyze this similar case, only answer with 0, 1, or 2:
